@@ -1,7 +1,7 @@
-body = File.read!("1.input")
-elems = String.splitter(body, "\n", trim: true)
-        |> Stream.map(&elem(Integer.parse(&1), 0))
-        |> Stream.dedup
+input = File.read!("1.input")
+  |> String.split("\n", trim: true)
+  |> Enum.map(&String.to_integer/1)
+  |> Enum.dedup
 
 defmodule Permutations do
   def of(stream, i), do: of(stream, [], i)
@@ -13,7 +13,7 @@ defmodule Permutations do
 end
 
 IO.write("2 elements: ")
-elems
+input
 |> Permutations.of(2)
 |> Enum.find(&(Enum.sum(&1) == 2020))
 |> Enum.reduce(1, &*/2)
@@ -21,9 +21,10 @@ elems
 |> IO.puts
 
 IO.write("3 elements: ")
-elems
+input
 |> Permutations.of(3)
 |> Enum.find(&(Enum.sum(&1) == 2020))
 |> Enum.reduce(1, &*/2)
 |> Integer.to_string
 |> IO.puts
+
