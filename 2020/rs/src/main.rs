@@ -8,7 +8,7 @@ pub mod solvers;
 use solvers::*;
 
 fn main() {
-    let solvers: Vec<&dyn Solver> = vec![&c1::Solver];
+    let solvers: Vec<&dyn Solver> = vec![&c1::Solver, &c2::Solver];
     prelude();
     let mut duration = Duration::zero();
     for (idx, solver) in solvers.into_iter().enumerate() {
@@ -16,8 +16,9 @@ fn main() {
         let start = Local::now();
         solver.solve(&mut duration);
         let end = Local::now();
-        duration = duration + (end - start);
-        print_single_duration(duration);
+        let cur = end - start;
+        duration = duration + cur;
+        print_single_duration(cur);
     }
     print_total_duration(duration);
 }
