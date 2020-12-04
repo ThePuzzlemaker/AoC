@@ -1,4 +1,5 @@
 use super::report;
+use rayon::prelude::*;
 
 use chrono::Duration;
 
@@ -6,7 +7,7 @@ pub struct Solver;
 impl super::Solver for Solver {
     fn solve(&self, duration: &mut Duration) {
         let input = include_str!("../data/2.input");
-        let tuples = input.lines().map(|e| {
+        let tuples = input.par_lines().map(|e| {
             let mut split = e.split(' ');
             let mut range = split.next().unwrap().split('-');
             let min = range.next().unwrap().parse::<u8>().unwrap();
@@ -19,7 +20,7 @@ impl super::Solver for Solver {
         let pt1 = tuples
             .clone()
             .filter(|&(min, max, ch, pwd)| {
-                let count_of_ch = pwd.chars().filter(|c| *c == ch).count() as u8;
+                let count_of_ch = pwd.par_chars().filter(|c| *c == ch).count() as u8;
                 count_of_ch >= min && count_of_ch <= max
             })
             .count();

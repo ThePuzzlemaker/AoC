@@ -8,7 +8,7 @@ pub mod solvers;
 use solvers::*;
 
 fn main() {
-    let solvers: Vec<&dyn Solver> = vec![&c1::Solver, &c2::Solver];
+    let solvers: Vec<&dyn Solver> = vec![&c1::Solver, &c2::Solver, &c3::Solver];
     prelude();
     let mut duration = Duration::zero();
     for (idx, solver) in solvers.into_iter().enumerate() {
