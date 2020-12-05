@@ -12,10 +12,9 @@ impl super::Solver for Solver {
         let mut values = input
             .par_split('\n')
             .map(|s| {
-                s.replace(&['F', 'L'] as &[char], "0")
-                    .replace(&['B', 'R'] as &[char], "1")
+                s.chars()
+                    .fold(0, |p, c| p * 2 + (c == 'B' || c == 'R') as usize)
             })
-            .map(|s| usize::from_str_radix(&s, 2).unwrap())
             .collect::<Vec<usize>>();
         values.par_sort_unstable();
         report(
@@ -26,9 +25,7 @@ impl super::Solver for Solver {
         let first = *values.first().unwrap();
         let last = *values.last().unwrap();
         let mut set: HashSet<usize> = HashSet::new();
-        values.iter().copied().for_each(|v| {
-            set.insert(v);
-        });
+        set.extend(values.into_iter());
         let idx = (first..=last)
             .par_bridge()
             .find_first(|v| !set.contains(v))
