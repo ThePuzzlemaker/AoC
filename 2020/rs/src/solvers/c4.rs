@@ -45,8 +45,8 @@ impl super::Solver for Solver {
 
 type OptionalStr = Option<&'static str>;
 
-#[derive(Debug, Copy, Clone, Default, Eq, PartialEq, Hash, Ord, PartialOrd)]
-pub struct Record {
+#[derive(Copy, Clone, Default)]
+struct Record {
     byr: OptionalStr,
     iyr: OptionalStr,
     eyr: OptionalStr,
