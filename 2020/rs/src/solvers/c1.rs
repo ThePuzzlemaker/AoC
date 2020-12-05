@@ -4,6 +4,8 @@ use rayon::prelude::*;
 
 use chrono::Duration;
 
+use std::collections::HashSet;
+
 pub struct Solver;
 impl super::Solver for Solver {
     fn solve(&self, duration: &mut Duration) {
@@ -28,6 +30,10 @@ impl super::Solver for Solver {
             duration,
         );
         report("3 elements:", None, duration);
+        let mut set = HashSet::new();
+        input.iter().for_each(|v| {
+            set.insert(v);
+        });
         let pt2 = input
             .iter()
             .combinations(2)
@@ -37,7 +43,7 @@ impl super::Solver for Solver {
                 if i + j == 2020 {
                     false
                 } else {
-                    input.contains(&(2020 - i - j))
+                    set.contains(&(2020 - i - j))
                 }
             })
             .unwrap();
