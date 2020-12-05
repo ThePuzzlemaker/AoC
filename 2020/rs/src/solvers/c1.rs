@@ -43,7 +43,7 @@ impl super::Solver for Solver {
                 if i + j == 2020 {
                     false
                 } else {
-                    set.contains(&(2020 - i - j))
+                    set.contains(&(2020u32.wrapping_sub(i).wrapping_sub(j)))
                 }
             })
             .unwrap();

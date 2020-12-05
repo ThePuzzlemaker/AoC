@@ -33,7 +33,7 @@ impl super::Solver for Solver {
             .filter(|&(pos1, pos2, ch, pwd)| {
                 let ch1 = pwd.chars().nth(pos1 as usize - 1).unwrap_or('\0');
                 let ch2 = pwd.chars().nth(pos2 as usize - 1).unwrap_or('\0');
-                (ch1 == ch) != (ch2 == ch)
+                (ch1 == ch) ^ (ch2 == ch)
             })
             .count();
         report(
