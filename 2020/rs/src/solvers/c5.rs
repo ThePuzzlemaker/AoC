@@ -1,5 +1,4 @@
-use super::{report, report2};
-use itertools::Itertools;
+use super::report;
 use rayon::prelude::*;
 
 use std::collections::HashSet;
