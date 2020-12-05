@@ -13,15 +13,8 @@ impl super::Solver for Solver {
         let mut values = input
             .par_split('\n')
             .map(|s| {
-                s.chars()
-                    .map(|c| match c {
-                        'F' => '0',
-                        'B' => '1',
-                        'L' => '0',
-                        'R' => '1',
-                        _ => panic!(),
-                    })
-                    .collect::<String>()
+                s.replace(|c| ['F', 'L'].contains(&c), "0")
+                    .replace(|c| ['B', 'R'].contains(&c), "1")
             })
             .map(|s| usize::from_str_radix(&s, 2).unwrap())
             .collect::<Vec<usize>>();
