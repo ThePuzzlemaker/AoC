@@ -1,5 +1,6 @@
 use super::{report, report2};
 use itertools::Itertools;
+use rayon::prelude::*;
 
 use chrono::Duration;
 
@@ -17,31 +18,34 @@ impl super::Solver for Solver {
         input.dedup();
 
         report("2 elements:", None, duration);
-        let comb2 = input
-            .iter()
-            .combinations(2)
-            .find(|e| e.iter().copied().sum::<u32>() == 2020)
+        let a = *input
+            .par_iter()
+            .find_first(|e| input.contains(&(2020 - *e)))
             .unwrap();
         report2(
-            format!(
-                "  {:?}.product = {}",
-                comb2,
-                comb2.iter().copied().product::<u32>()
-            ),
+            format!("  {:?}.product = {}", [a, 2020 - a], a * (2020 - a)),
             None,
             duration,
         );
         report("3 elements:", None, duration);
-        let comb3 = input
+        let pt2 = input
             .iter()
-            .combinations(3)
-            .find(|e| e.iter().copied().sum::<u32>() == 2020)
+            .combinations(2)
+            .par_bridge()
+            .map(|v| (*v[0], *v[1]))
+            .find_first(|&(i, j)| {
+                if i + j == 2020 {
+                    false
+                } else {
+                    input.contains(&(2020 - i - j))
+                }
+            })
             .unwrap();
         report2(
             format!(
                 "  {:?}.product = {}",
-                comb3,
-                comb3.iter().copied().product::<u32>()
+                [pt2.0, pt2.1, 2020 - pt2.0 - pt2.1],
+                pt2.0 * pt2.1 * (2020 - pt2.0 - pt2.1)
             ),
             None,
             duration,
