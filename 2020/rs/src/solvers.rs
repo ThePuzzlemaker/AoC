@@ -1,7 +1,3 @@
-pub mod c1;
-pub mod c2;
-pub mod c3;
-
 use chrono::Duration;
 
 pub trait Solver {
@@ -43,3 +39,8 @@ pub fn report2(output: impl AsRef<str>, style: Option<Style>, duration: &mut Dur
     // Ignore the time it took to print this message.
     *duration = *duration - (end - start);
 }
+
+pub mod c1;
+pub mod c2;
+pub mod c3;
+pub mod c4;
