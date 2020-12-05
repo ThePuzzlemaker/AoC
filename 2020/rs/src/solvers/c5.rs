@@ -17,18 +17,14 @@ impl super::Solver for Solver {
             })
             .collect::<Vec<usize>>();
         values.par_sort_unstable();
-        report(
-            format!("max value: {}", values.last().unwrap()),
-            None,
-            duration,
-        );
         let first = *values.first().unwrap();
         let last = *values.last().unwrap();
+        report(format!("max value: {}", last), None, duration);
         let mut set: HashSet<usize> = HashSet::new();
         set.extend(values.into_iter());
         let idx = (first..=last)
             .par_bridge()
-            .find_first(|v| !set.contains(v))
+            .find_any(|v| !set.contains(v))
             .unwrap();
         report(format!("my seat: {}", idx), None, duration);
     }

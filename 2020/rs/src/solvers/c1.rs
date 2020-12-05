@@ -22,7 +22,7 @@ impl super::Solver for Solver {
         report("2 elements:", None, duration);
         let a = *input
             .par_iter()
-            .find_first(|e| input.contains(&(2020 - *e)))
+            .find_any(|e| input.contains(&(2020 - *e)))
             .unwrap();
         report2(
             format!("  {:?}.product = {}", [a, 2020 - a], a * (2020 - a)),
@@ -39,7 +39,7 @@ impl super::Solver for Solver {
             .combinations(2)
             .par_bridge()
             .map(|v| (*v[0], *v[1]))
-            .find_first(|&(i, j)| {
+            .find_any(|&(i, j)| {
                 if i + j == 2020 {
                     false
                 } else {
