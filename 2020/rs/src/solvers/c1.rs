@@ -1,6 +1,5 @@
 use super::{report, report2};
 use itertools::Itertools;
-use rayon::prelude::*;
 
 use chrono::Duration;
 
@@ -12,18 +11,15 @@ impl super::Solver for Solver {
         let input = include_str!("../data/1.input");
         let mut input = input
             .lines()
-            .map(str::parse::<u32>)
+            .map(str::parse)
             .map(Result::unwrap)
-            .collect::<Vec<u32>>();
+            .collect::<Vec<_>>();
         // Sorting the list and dedup-ing it drastically improves performance.
         input.sort_unstable();
         input.dedup();
 
         report("2 elements:", None, duration);
-        let a = *input
-            .par_iter()
-            .find_any(|e| input.contains(&(2020 - *e)))
-            .unwrap();
+        let a = *input.iter().find(|e| input.contains(&(2020 - *e))).unwrap();
         report2(
             format!("  {:?}.product = {}", [a, 2020 - a], a * (2020 - a)),
             None,
@@ -31,15 +27,12 @@ impl super::Solver for Solver {
         );
         report("3 elements:", None, duration);
         let mut set = HashSet::new();
-        input.iter().for_each(|v| {
-            set.insert(v);
-        });
+        set.extend(input.iter().copied());
         let pt2 = input
             .iter()
             .combinations(2)
-            .par_bridge()
             .map(|v| (*v[0], *v[1]))
-            .find_any(|&(i, j)| {
+            .find(|&(i, j)| {
                 if i + j == 2020 {
                     false
                 } else {

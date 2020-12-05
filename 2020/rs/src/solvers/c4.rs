@@ -1,5 +1,5 @@
 use super::report;
-use rayon::prelude::*;
+use itertools::Itertools;
 
 use chrono::Duration;
 
@@ -10,25 +10,23 @@ impl super::Solver for Solver {
         let records = input
             .split("\n\n")
             .map(Record::from_record_str)
-            .collect::<Vec<Record>>();
-        let pt1 = records
-            .par_iter()
-            .copied()
             .filter(Record::verify_fields_present)
-            .count();
+            .collect::<Vec<_>>();
+
         report(
-            format!("# of passports w/ all expected fields: {}", pt1),
+            format!(
+                "# of passports w/ all expected fields: {}",
+                records.iter().count()
+            ),
             None,
             duration,
         );
-        let pt2 = records
-            .par_iter()
-            .copied()
-            .filter(Record::verify_fields_present)
+        let all_valid = records
+            .into_iter()
             .filter(Record::verify_field_values)
             .count();
         report(
-            format!("# of passports w/ all valid fields: {}", pt2),
+            format!("# of passports w/ all valid fields: {}", all_valid),
             None,
             duration,
         );
@@ -117,16 +115,17 @@ impl Record {
         }
         let eyr = eyr.unwrap();
 
-        byr >= 1920 && byr <= 2002 && iyr >= 2010 && iyr <= 2020 && eyr >= 2020 && eyr <= 2030
+        (1920..=2002).contains(&byr) && (2010..=2020).contains(&iyr) && (2020..=2030).contains(&eyr)
     }
 
     fn verify_hgt(&self) -> bool {
         let hgt = self.hgt.unwrap();
-        let hgti = if hgt.par_chars().count() >= 2 {
-            let mut vec = hgt.chars().collect::<Vec<char>>();
-            vec.pop();
-            vec.pop();
-            let hgti = vec.iter().collect::<String>().parse::<usize>();
+        let hgti = if hgt.chars().count() >= 2 {
+            let hgti = hgt
+                .chars()
+                .dropping_back(2)
+                .collect::<String>()
+                .parse::<usize>();
             if hgti.is_err() {
                 return false;
             }
@@ -136,9 +135,9 @@ impl Record {
         };
 
         if hgt.ends_with("cm") {
-            150 <= hgti && hgti <= 193
+            (150..=193).contains(&hgti)
         } else if hgt.ends_with("in") {
-            59 <= hgti && hgti <= 76
+            (59..=76).contains(&hgti)
         } else {
             false
         }
@@ -147,21 +146,16 @@ impl Record {
     fn verify_hcl(&self) -> bool {
         let hcl = self.hcl.unwrap();
         hcl.starts_with('#')
-            && hcl
-                .chars()
-                .skip(1)
-                .par_bridge()
-                .all(|ch| ch.is_ascii_hexdigit())
-            && hcl.par_chars().count() == 7
+            && hcl.chars().skip(1).all(|ch| ch.is_ascii_hexdigit())
+            && hcl.chars().count() == 7
     }
 
     fn verify_ecl(&self) -> bool {
-        let ecl = self.ecl.unwrap();
-        ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].contains(&ecl)
+        ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"].contains(&self.ecl.unwrap())
     }
 
     fn verify_pid(&self) -> bool {
         let pid = self.pid.unwrap();
-        pid.par_chars().all(|ch| ch.is_ascii_digit()) && pid.par_chars().count() == 9
+        pid.chars().all(|ch| ch.is_ascii_digit()) && pid.chars().count() == 9
     }
 }
