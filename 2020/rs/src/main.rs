@@ -14,6 +14,7 @@ fn main() {
         &c3::Solver,
         &c4::Solver,
         &c5::Solver,
+        &c6::Solver,
     ];
     prelude();
     let mut duration = Duration::zero();
