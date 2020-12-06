@@ -1,5 +1,6 @@
 use super::report;
 use itertools::Itertools;
+use std::iter;
 
 use chrono::Duration;
 
@@ -10,7 +11,7 @@ impl super::Solver for Solver {
         let input = input.split("\n\n").collect::<Vec<_>>();
         let res = input
             .iter()
-            .map(|s| s.split('\n').join("").chars().unique().count())
+            .map(|&s| s.chars().chain(iter::once('\n')).unique().count() - 1)
             .sum::<usize>();
         report(
             format!(
